@@ -11,11 +11,15 @@ import (
 )
 
 type server struct {
-	service.UnimplementedGreeterServer
+	service.UnimplementedUserServer
 }
 
-func (s *server) SayHello(ctx context.Context, in *service.HelloRequest) (*service.HelloReply, error) {
-	return &service.HelloReply{Message: "hello " + in.Name}, nil
+func (s *server) Register(ctx context.Context, in *service.RegisterRequest) (*service.SuccessRsp, error) {
+	return &service.SuccessRsp{Code: 200, Message: "成功", Data: ""}, nil
+}
+
+func (s *server) Login(ctx context.Context, in *service.LoginRequest) (*service.LoginRsp, error) {
+	return &service.LoginRsp{AccessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJrZXkiOiJhcHAiLCJleHAiOjE2ODU1OTMzMDQsIm5iZiI6MTY4NTU0OTEwNCwiaWF0IjoxNjg1NTUwMTA0LCJqdGkiOiI0NjMwODUyOTg3MjE0ODg5MDEifQ.7S-IQu-F4JpMZo1s9WFQYGA9j5EqfuoSir-JmQKj5QU", ExpireIn: 12600}, nil
 }
 
 func main() {
@@ -28,7 +32,7 @@ func main() {
 	// 创建gRPC服务器
 	s := grpc.NewServer()
 	// 注册服务
-	service.RegisterGreeterServer(s, &server{})
+	service.RegisterUserServer(s, &server{})
 	reflection.Register(s)
 	err = s.Serve(lis)
 	if err != nil {
